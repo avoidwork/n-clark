@@ -1,6 +1,6 @@
 {
   "name": "n-clark",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "LUIS.ai wrapper",
   "main": "index.js",
   "scripts": {
