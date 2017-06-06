@@ -5,7 +5,19 @@
     host = 'https://westus.api.cognitive.microsoft.com';
 
   function validate (arg, type, not) {
-    return typeof arg === type && arg !== not;
+    let fn = typeof not === 'function',
+      regex = not instanceof RegExp,
+      result = true;
+
+    if (fn) {
+      result = typeof arg === type && fn(arg);
+    } else if (regex) {
+      result = typeof arg === type && !not.test(arg);
+    } else {
+      result = typeof arg === type && arg !== not;
+    }
+
+    return result;
   }
 
   class NClark {
@@ -59,7 +71,7 @@
       throw new TypeError('"key" is invalid');
     }
 
-    if (!validate(verbose, 'boolean', null)) {
+    if (!validate(verbose, 'boolean', /^(null|undefined)$/)) {
       throw new TypeError('"verbose" is invalid');
     }
 
