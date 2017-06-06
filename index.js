@@ -23,9 +23,11 @@
   }
 
   class NClark {
-    constructor (id, key, verbose) {
+    constructor (id, key, verbose, debug) {
+      this.debug = debug;
       this.id = id;
       this.key = key;
+      this.results = new Set();
       this.urls = {
         predict: String.raw`${host}/luis/v2.0/apps/${this.id}?subscription-key=${this.key}&q=%s&verbose=${verbose}`,
         reply: String.raw`${host}/luis/v2.0/apps/${this.id}?subscription-key=${this.id}&q=%s&contextid=%c&verbose=${verbose}`
@@ -41,6 +43,10 @@
 
         return res.json();
       }).then(arg => {
+        if (this.debug) {
+          this.results.add([status, arg]);
+        }
+
         if (!ok) {
           throw new Error(text);
         }
@@ -64,7 +70,7 @@
     }
   }
 
-  function factory (id = '', key = '', verbose = true) {
+  function factory (id = '', key = '', verbose = true, debug = false) {
     if (!validate(id, 'string', '')) {
       throw new TypeError('"id" is invalid');
     }
@@ -77,7 +83,11 @@
       throw new TypeError('"verbose" is invalid');
     }
 
-    return new NClark(id, key, verbose);
+    if (!validate(debug, 'boolean', /^(null)$/)) {
+      throw new TypeError('"debug" is invalid');
+    }
+
+    return new NClark(id, key, verbose, debug);
   }
 
   // CommonJS, AMD, script tag
