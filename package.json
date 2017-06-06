@@ -24,5 +24,12 @@
   "bugs": {
     "url": "https://github.com/avoidwork/n-clark/issues"
   },
-  "homepage": "https://github.com/avoidwork/n-clark#readme"
+  "homepage": "https://github.com/avoidwork/n-clark#readme",
+  "dependencies": {
+    "node-fetch": "^1.7.1"
+  },
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-eslint": "^19.0.0"
+  }
 }
