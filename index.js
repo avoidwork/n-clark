@@ -63,7 +63,7 @@
       throw new TypeError('"verbose" is invalid');
     }
 
-    return new NClark(id, key);
+    return new NClark(id, key, verbose);
   }
 
   // CommonJS, AMD, script tag
