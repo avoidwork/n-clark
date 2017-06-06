@@ -7,14 +7,16 @@
   function validate (arg, type, not) {
     let fn = typeof not === 'function',
       regex = not instanceof RegExp,
-      result = true;
+      result = typeof arg === type;
 
-    if (fn) {
-      result = typeof arg === type && fn(arg) !== true;
-    } else if (regex) {
-      result = typeof arg === type && !not.test(arg);
-    } else {
-      result = typeof arg === type && arg !== not;
+    if (result) {
+      if (fn) {
+        result = fn(arg) !== true;
+      } else if (regex) {
+        result = !not.test(arg);
+      } else {
+        result = arg !== not;
+      }
     }
 
     return result;
