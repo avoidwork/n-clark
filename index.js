@@ -10,7 +10,7 @@
       result = true;
 
     if (fn) {
-      result = typeof arg === type && fn(arg);
+      result = typeof arg === type && fn(arg) !== true;
     } else if (regex) {
       result = typeof arg === type && !not.test(arg);
     } else {
