@@ -92,9 +92,7 @@
   if (typeof exports !== 'undefined') {
     module.exports = factory;
   } else if (typeof define === 'function' && define.amd) {
-    define(() => {
-      return factory;
-    });
+    define(() => factory);
   } else {
     global.nClark = factory;
   }
