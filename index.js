@@ -44,7 +44,7 @@
         return res.json();
       }).then(arg => {
         if (this.debug) {
-          this.results.add([status, arg]);
+          this.results.add([status, decodeURIComponent(url.replace(/^.*q=/, '').replace(/&.*$/, '')), arg]);
         }
 
         if (!ok) {
