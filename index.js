@@ -71,7 +71,7 @@
       throw new TypeError('"key" is invalid');
     }
 
-    if (!validate(verbose, 'boolean', /^(null|undefined)$/)) {
+    if (!validate(verbose, 'boolean', /^(null)$/)) {
       throw new TypeError('"verbose" is invalid');
     }
 
