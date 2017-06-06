@@ -3,8 +3,7 @@ LUIS.ai wrapper
 
 ### Example
 ```javascript
-const nClark = require('n-clark'),
-  luis = nClark('appId', 'subscriptionKey'[, verbose=true[, debug=true]]);
+const luis = require('n-clark')('appId', 'subscriptionKey'[, verbose=true[, debug=true]]);
   
 luis.predict('input text here').then(data => console.log(data));
 ```
