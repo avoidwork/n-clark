@@ -69,21 +69,16 @@
   }
 
   function factory (id = '', key = '', verbose = true, debug = false) {
-    if (!validate(id, 'string', '')) {
-      throw new TypeError('"id" is invalid');
-    }
-
-    if (!validate(key, 'string', '')) {
-      throw new TypeError('"key" is invalid');
-    }
-
-    if (!validate(verbose, 'boolean', /^(null)$/)) {
-      throw new TypeError('"verbose" is invalid');
-    }
-
-    if (!validate(debug, 'boolean', /^(null)$/)) {
-      throw new TypeError('"debug" is invalid');
-    }
+    [
+      [id, 'id', 'string', ''],
+      [key, 'key', 'string', ''],
+      [verbose, 'verbose', 'boolean'],
+      [debug, 'debug', 'boolean']
+    ].forEach(i => {
+      if (!validate(i[0], i[2], i[3])) {
+        throw new TypeError(i[1] + ' is invalid');
+      }
+    });
 
     return new NClark(id, key, verbose, debug);
   }
