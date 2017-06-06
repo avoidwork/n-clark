@@ -25,12 +25,10 @@
   class NClark {
     constructor (id, key, verbose, debug) {
       this.debug = debug;
-      this.id = id;
-      this.key = key;
       this.results = new Set();
       this.urls = {
-        predict: String.raw`${host}/luis/v2.0/apps/${this.id}?subscription-key=${this.key}&q=%s&verbose=${verbose}`,
-        reply: String.raw`${host}/luis/v2.0/apps/${this.id}?subscription-key=${this.id}&q=%s&contextid=%c&verbose=${verbose}`
+        predict: String.raw`${host}/luis/v2.0/apps/${id}?subscription-key=${key}&q=%s&verbose=${verbose}`,
+        reply: String.raw`${host}/luis/v2.0/apps/${id}?subscription-key=${id}&q=%s&contextid=%c&verbose=${verbose}`
       };
     }
 
