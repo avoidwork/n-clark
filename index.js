@@ -1,8 +1,7 @@
 'use strict';
 
 (function (global) {
-  const fetch = global.fetch || require('node-fetch'),
-    host = 'https://westus.api.cognitive.microsoft.com';
+  const fetch = global.fetch || require('node-fetch');
 
   function validate (arg, type, not) {
     let fn = typeof not === 'function',
@@ -23,13 +22,18 @@
   }
 
   class NClark {
-    constructor (id, key, verbose, debug) {
+    constructor (id, key, verbose, debug, host, params) {
       this.debug = debug;
       this.results = new Set();
       this.urls = {
-        predict: String.raw`${host}/luis/v2.0/apps/${id}?subscription-key=${key}&q=%s&verbose=${verbose}`,
-        reply: String.raw`${host}/luis/v2.0/apps/${id}?subscription-key=${id}&q=%s&contextid=%c&verbose=${verbose}`
+        predict: String.raw`https://${host}.api.cognitive.microsoft.com/luis/v2.0/apps/${id}?subscription-key=${key}&q=%s&verbose=${verbose}`,
+        reply: String.raw`https://${host}.api.cognitive.microsoft.com/luis/v2.0/apps/${id}?subscription-key=${key}&q=%s&contextid=%c&verbose=${verbose}`
       };
+
+      if (params !== '') {
+        this.urls.predict += '&' + params.replace(/^&/, '');
+        this.urls.reply += '&' + params.replace(/^&/, '');
+      }
     }
 
     fetch (url) {
@@ -68,19 +72,20 @@
     }
   }
 
-  function factory (id = '', key = '', verbose = true, debug = false) {
+  function factory ({id = '', key = '', host = 'westus', debug = false, verbose = true, params = ''} = {}) {
     [
       [id, 'id', 'string', ''],
       [key, 'key', 'string', ''],
       [verbose, 'verbose', 'boolean'],
-      [debug, 'debug', 'boolean']
+      [debug, 'debug', 'boolean'],
+      [key, 'host', 'string', '']
     ].forEach(i => {
       if (!validate(i[0], i[2], i[3])) {
         throw new TypeError(i[1] + ' is invalid');
       }
     });
 
-    return new NClark(id, key, verbose, debug);
+    return new NClark(id, key, verbose, debug, host, params);
   }
 
   // CommonJS, AMD, script tag
