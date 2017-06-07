@@ -79,7 +79,7 @@
       [key, 'key', 'string', ''],
       [verbose, 'verbose', 'boolean'],
       [debug, 'debug', 'boolean'],
-      [key, 'host', 'string', '']
+      [host, 'host', 'string', '']
     ].forEach(i => {
       if (!validate(i[0], i[2], i[3])) {
         throw new TypeError(i[1] + ' is invalid');
