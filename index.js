@@ -30,17 +30,18 @@
         reply: String.raw`https://${host}.api.cognitive.microsoft.com/luis/v2.0/apps/${id}?subscription-key=${key}&q=%s&contextid=%c&verbose=${verbose}`
       };
 
-      if (params !== '') {
+      if (validate(params, 'string', '')) {
         this.urls.predict += '&' + params.replace(/^&/, '');
         this.urls.reply += '&' + params.replace(/^&/, '');
       }
     }
 
     fetch (url) {
-      let ok, text;
+      let ok, status, text;
 
       return fetch(url).then(res => {
         ok = res.ok;
+        status = res.status;
         text = res.statusText;
 
         return res.json();
