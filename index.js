@@ -4,18 +4,10 @@
   const fetch = global.fetch || require('node-fetch');
 
   function validate (arg, type, not) {
-    let fn = typeof not === 'function',
-      regex = not instanceof RegExp,
-      result = typeof arg === type;
+    let result = typeof arg === type;
 
     if (result) {
-      if (fn) {
-        result = fn(arg) !== true;
-      } else if (regex) {
-        result = !not.test(arg);
-      } else {
-        result = arg !== not;
-      }
+      result = arg !== not;
     }
 
     return result;
