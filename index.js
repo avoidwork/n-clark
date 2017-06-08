@@ -38,11 +38,11 @@
 
         return res.json();
       }).then(arg => {
-        if (this.debug) {
+        if (this.debug === true) {
           this.results.add([status, decodeURIComponent(url.replace(/^.*q=/, '').replace(/&.*$/, '')), arg]);
         }
 
-        if (!ok) {
+        if (ok !== true) {
           throw new Error(text);
         }
 
@@ -50,11 +50,21 @@
       });
     }
 
-    predict (text) {
+    predict (text = '') {
+      if (!validate(text, 'string', '')) {
+        throw new TypeError('text is invalid');
+      }
+
       return this.fetch(this.urls.predict.replace('%s', encodeURIComponent(text)));
     }
 
-    reply (text, context, set = '') {
+    reply (text = '', context = '', set = '') {
+      if (!validate(text, 'string', '')) {
+        throw new TypeError('text is invalid');
+      } else if (!validate(context, 'string', '')) {
+        throw new TypeError('context is invalid');
+      }
+
       let url = this.urls.predict.replace('%s', encodeURIComponent(text)).replace('%c', encodeURIComponent(context));
 
       if (validate(set, 'string', '')) {
