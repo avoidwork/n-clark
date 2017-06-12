@@ -38,11 +38,11 @@
 
         return res.json();
       }).then(arg => {
-        if (this.debug === true) {
+        if (this.debug) {
           this.results.add([status, decodeURIComponent(url.replace(/^.*q=/, '').replace(/&.*$/, '')), arg]);
         }
 
-        if (ok !== true) {
+        if (!ok) {
           throw new Error(text);
         }
 
