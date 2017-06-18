@@ -29,49 +29,55 @@
     }
 
     fetch (url) {
-      let ok, status, text;
+      return new Promise((resolve, reject) => {
+        let ok, status, text;
 
-      return fetch(url).then(res => {
-        ok = res.ok;
-        status = res.status;
-        text = res.statusText;
+        fetch(url).then(res => {
+          ok = res.ok;
+          status = res.status;
+          text = res.statusText;
 
-        return res.json();
-      }).then(arg => {
-        if (this.debug) {
-          this.results.add([status, decodeURIComponent(url.replace(/^.*q=/, '').replace(/&.*$/, '')), arg]);
-        }
+          return res.json();
+        }).then(arg => {
+          if (this.debug) {
+            this.results.add([status, decodeURIComponent(url.replace(/^.*q=/, '').replace(/&.*$/, '')), arg]);
+          }
 
-        if (!ok) {
-          throw new Error(text);
-        }
-
-        return arg;
+          if (!ok) {
+            reject(new Error(text));
+          } else {
+            resolve(arg);
+          }
+        }).catch(reject);
       });
     }
 
     predict (text = '') {
-      if (!validate(text, 'string', '')) {
-        throw new TypeError('text is invalid');
-      }
+      return new Promise((resolve, reject) => {
+        if (!validate(text, 'string', '')) {
+          reject(new TypeError('text is invalid'));
+        }
 
-      return this.fetch(this.urls.predict.replace('%s', encodeURIComponent(text)));
+        this.fetch(this.urls.predict.replace('%s', encodeURIComponent(text))).then(resolve, reject);
+      });
     }
 
     reply (text = '', context = '', set = '') {
-      if (!validate(text, 'string', '')) {
-        throw new TypeError('text is invalid');
-      } else if (!validate(context, 'string', '')) {
-        throw new TypeError('context is invalid');
-      }
+      return new Promise((resolve, reject) => {
+        if (!validate(text, 'string', '')) {
+          reject(new TypeError('text is invalid'));
+        } else if (!validate(context, 'string', '')) {
+          reject(new TypeError('context is invalid'));
+        }
 
-      let url = this.urls.predict.replace('%s', encodeURIComponent(text)).replace('%c', encodeURIComponent(context));
+        let url = this.urls.predict.replace('%s', encodeURIComponent(text)).replace('%c', encodeURIComponent(context));
 
-      if (validate(set, 'string', '')) {
-        url += '&forceset=' + encodeURIComponent(set);
-      }
+        if (validate(set, 'string', '')) {
+          url += '&forceset=' + encodeURIComponent(set);
+        }
 
-      return this.fetch(url);
+        this.fetch(url).then(resolve, reject);
+      });
     }
   }
 
@@ -94,7 +100,7 @@
   // CommonJS, AMD, script tag
   if (typeof exports !== 'undefined') {
     module.exports = factory;
-  } else if (typeof define === 'function' && define.amd) {
+  } else if (typeof define === 'function' && define.amd !== undefined) {
     define(() => factory);
   } else {
     global.nClark = factory;
