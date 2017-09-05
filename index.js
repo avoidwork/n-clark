@@ -1,7 +1,8 @@
 'use strict';
 
 (function (global) {
-  const fetch = global.fetch || require('node-fetch');
+  const fetch = global.fetch || require('node-fetch'),
+    isJson = /application\/json/;
 
   function validate (arg, type, not) {
     let result = typeof arg === type;
@@ -37,14 +38,14 @@
           status = res.status;
           text = res.statusText;
 
-          return res.json();
+          return isJson.test(res.headers.get('content-type') || '') ? res.json() : res.text();
         }).then(arg => {
           if (this.debug) {
             this.results.add([status, decodeURIComponent(url.replace(/^.*q=/, '').replace(/&.*$/, '')), arg]);
           }
 
           if (!ok) {
-            reject(new Error(text));
+            reject(new Error(arg || text));
           } else {
             resolve(arg);
           }
@@ -100,7 +101,7 @@
   // CommonJS, AMD, script tag
   if (typeof exports !== 'undefined') {
     module.exports = factory;
-  } else if (typeof define === 'function' && define.amd !== undefined) {
+  } else if (typeof define === 'function' && define.amd !== void 0) {
     define(() => factory);
   } else {
     global.nClark = factory;
