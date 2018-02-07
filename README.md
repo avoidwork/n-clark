@@ -3,9 +3,10 @@ LUIS.ai wrapper
 
 ### Example
 ```javascript
-const luis = require('n-clark')({id: 'appId', key: 'subscriptionKey', host: 'eastus2'});
-  
-luis.predict('input text here').then(data => console.log(data));
+const luis = require('n-clark')({id: 'appId', key: 'subscriptionKey', host: 'eastus2'}),
+  data = await luis.predict('input text here');
+
+console.log(data);
 ```
 
 ### Configuration
