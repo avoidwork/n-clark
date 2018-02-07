@@ -31,14 +31,14 @@
 
     async fetch (url) {
       const res = await fetch(url),
-        result = await isJson.test(res.headers.get('content-type') || '') ? res.json() : res.text();
+        result = isJson.test(res.headers.get('content-type') || '') ? await res.json() : await res.text();
 
       if (this.debug) {
         this.results.add([res.status, decodeURIComponent(url.replace(/^.*q=/, '').replace(/&.*$/, '')), result]);
       }
 
       if (res.ok === false) {
-        throw new Error(result || res.statusText);
+        throw new Error(result.Message || res.statusText);
       }
 
       return result;
