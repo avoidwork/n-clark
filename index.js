@@ -55,7 +55,7 @@
     async reply (text = '', context = '', set = '') {
       if (validate(text, 'string', '') === false) {
         throw new TypeError('text is invalid');
-      } else if (!validate(context, 'string', '')) {
+      } else if (validate(context, 'string', '') === false) {
         throw new TypeError('context is invalid');
       }
 
@@ -77,7 +77,7 @@
       [debug, 'debug', 'boolean'],
       [host, 'host', 'string', '']
     ].forEach(i => {
-      if (!validate(i[0], i[2], i[3])) {
+      if (validate(i[0], i[2], i[3]) === false) {
         throw new TypeError(i[1] + ' is invalid');
       }
     });
