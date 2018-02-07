@@ -5,11 +5,9 @@
     "es6": true,
     "amd": true
   },
-  "ecmaFeatures": {
-    "jsx": true,
-    "superInFunctions": false,
-    "classes": false,
-    "modules": [2]
+  "parserOptions": {
+    "sourceType": "module",
+    "ecmaVersion": 2017
   },
   "rules": {
     "arrow-parens": [2, "as-needed"],

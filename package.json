@@ -1,6 +1,6 @@
 {
   "name": "n-clark",
-  "version": "1.0.9",
+  "version": "1.1.0",
   "description": "LUIS.ai wrapper",
   "main": "index.js",
   "scripts": {
@@ -26,10 +26,11 @@
   },
   "homepage": "https://github.com/avoidwork/n-clark#readme",
   "dependencies": {
-    "node-fetch": "^1.7.1"
+    "node-fetch": "^2.0.0"
   },
   "devDependencies": {
     "grunt": "^1.0.1",
-    "grunt-eslint": "^19.0.0"
+    "grunt-cli": "^1.2.0",
+    "grunt-eslint": "^20.1.0"
   }
 }

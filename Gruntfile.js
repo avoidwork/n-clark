@@ -1,14 +1,19 @@
+'use strict';
+
 module.exports = function (grunt) {
   grunt.initConfig({
     eslint: {
-      target: ["index.js"]
+      target: [
+        'Gruntfile.js',
+        'index.js'
+      ]
     }
   });
 
   // tasks
-  grunt.loadNpmTasks("grunt-eslint");
+  grunt.loadNpmTasks('grunt-eslint');
 
   // aliases
-  grunt.registerTask("test", ["eslint"]);
-  grunt.registerTask("default", ["test"]);
+  grunt.registerTask('test', ['eslint']);
+  grunt.registerTask('default', ['test']);
 };

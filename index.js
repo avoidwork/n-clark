@@ -19,66 +19,53 @@
       this.debug = debug;
       this.results = new Set();
       this.urls = {
-        predict: String.raw`https://${host}.api.cognitive.microsoft.com/luis/v2.0/apps/${id}?subscription-key=${key}&q=%s&verbose=${verbose}`,
-        reply: String.raw`https://${host}.api.cognitive.microsoft.com/luis/v2.0/apps/${id}?subscription-key=${key}&q=%s&contextid=%c&verbose=${verbose}`
+        predict: `https://${host}.api.cognitive.microsoft.com/luis/v2.0/apps/${id}?subscription-key=${key}&q=%s&verbose=${verbose}`,
+        reply: `https://${host}.api.cognitive.microsoft.com/luis/v2.0/apps/${id}?subscription-key=${key}&q=%s&contextid=%c&verbose=${verbose}`
       };
 
       if (validate(params, 'string', '')) {
-        this.urls.predict += '&' + params.replace(/^&/, '');
-        this.urls.reply += '&' + params.replace(/^&/, '');
+        this.urls.predict += `&${params.replace(/^&/, '')}`;
+        this.urls.reply += `&${params.replace(/^&/, '')}`;
       }
     }
 
-    fetch (url) {
-      return new Promise((resolve, reject) => {
-        let ok, status, text;
+    async fetch (url) {
+      const res = await fetch(url),
+        result = await isJson.test(res.headers.get('content-type') || '') ? res.json() : res.text();
 
-        fetch(url).then(res => {
-          ok = res.ok;
-          status = res.status;
-          text = res.statusText;
+      if (this.debug) {
+        this.results.add([res.status, decodeURIComponent(url.replace(/^.*q=/, '').replace(/&.*$/, '')), result]);
+      }
 
-          return isJson.test(res.headers.get('content-type') || '') ? res.json() : res.text();
-        }).then(arg => {
-          if (this.debug) {
-            this.results.add([status, decodeURIComponent(url.replace(/^.*q=/, '').replace(/&.*$/, '')), arg]);
-          }
+      if (res.ok === false) {
+        throw new Error(result || res.statusText);
+      }
 
-          if (!ok) {
-            reject(new Error(arg || text));
-          } else {
-            resolve(arg);
-          }
-        }).catch(reject);
-      });
+      return result;
     }
 
-    predict (text = '') {
-      return new Promise((resolve, reject) => {
-        if (!validate(text, 'string', '')) {
-          reject(new TypeError('text is invalid'));
-        }
+    async predict (text = '') {
+      if (validate(text, 'string', '') === false) {
+        throw new TypeError('text is invalid');
+      }
 
-        this.fetch(this.urls.predict.replace('%s', encodeURIComponent(text))).then(resolve, reject);
-      });
+      return await this.fetch(this.urls.predict.replace('%s', encodeURIComponent(text)));
     }
 
-    reply (text = '', context = '', set = '') {
-      return new Promise((resolve, reject) => {
-        if (!validate(text, 'string', '')) {
-          reject(new TypeError('text is invalid'));
-        } else if (!validate(context, 'string', '')) {
-          reject(new TypeError('context is invalid'));
-        }
+    async reply (text = '', context = '', set = '') {
+      if (validate(text, 'string', '') === false) {
+        throw new TypeError('text is invalid');
+      } else if (!validate(context, 'string', '')) {
+        throw new TypeError('context is invalid');
+      }
 
-        let url = this.urls.predict.replace('%s', encodeURIComponent(text)).replace('%c', encodeURIComponent(context));
+      let url = this.urls.predict.replace('%s', encodeURIComponent(text)).replace('%c', encodeURIComponent(context));
 
-        if (validate(set, 'string', '')) {
-          url += '&forceset=' + encodeURIComponent(set);
-        }
+      if (validate(set, 'string', '')) {
+        url += '&forceset=' + encodeURIComponent(set);
+      }
 
-        this.fetch(url).then(resolve, reject);
-      });
+      return await this.fetch(url);
     }
   }
 
